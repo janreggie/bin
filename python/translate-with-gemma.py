@@ -7,6 +7,7 @@ import argparse
 import sys
 
 import ollama
+from tqdm import tqdm
 
 parser = argparse.ArgumentParser(
     prog="translate-with-gemma",
@@ -640,7 +641,13 @@ def main():
     """Main program"""
     args = parser.parse_args()
     input_text = sys.stdin.read()
-    print(translate(input_text, args.source.lower(), args.target.lower()))
+
+    # We assume that our input_text is split by blank lines
+    # when the lines are too long.
+    input_groups = input_text.split("\n\n")
+    for input in tqdm(input_groups):
+        print(translate(input, args.source.lower(), args.target.lower()))
+        print()
 
 
 if __name__ == "__main__":
